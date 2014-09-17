@@ -3,11 +3,14 @@ from collections import Counter, namedtuple, OrderedDict
 from operator import itemgetter, mul, attrgetter
 import colorsys
 import webcolors
-from urllib2 import urlopen
-from Pillow import Image as Im
-from Pillow import ImageChops, ImageDraw
+try:
+    from urllib.request import urlopen
+except ImportError:
+    from urllib import urlopen
+from PIL import Image as Im
+from PIL import ImageChops, ImageDraw
 from colormath.color_objects import sRGBColor
-import cStringIO
+import io
 import json
 import random
 from math import sqrt
@@ -38,7 +41,7 @@ def prepare_output(colors, format):
         output = {}
         for color in colors:
             name = get_color_name(hex_to_rgb(color))
-            if convert3To21[name] not in output.keys():
+            if convert3To21[name] not in list(output.keys()):
                 output[convert3To21[name]] = [{name : color}]
             else:
                 output[convert3To21[name]].append({name : color})
@@ -58,7 +61,7 @@ def prepare_output(colors, format):
 
         for color in colors:
             name = get_color_name(hex_to_rgb(color))
-            if convert3To21[name] not in output['tree'].keys():
+            if convert3To21[name] not in list(output['tree'].keys()):
                 output['tree'][convert3To21[name]] = [{name : color}]
             else:
                 output['tree'][convert3To21[name]].append({name : color})
@@ -68,7 +71,7 @@ def closest_color(requested_color):
     ''' Find the name of the closest color given a requested color. '''
 
     min_colors = {}
-    for key, name in webcolors.css3_hex_to_names.items():
+    for key, name in list(webcolors.css3_hex_to_names.items()):
         r_c, g_c, b_c = webcolors.hex_to_rgb(key)
         rd = (r_c - requested_color[0]) ** 2
         gd = (g_c - requested_color[1]) ** 2
@@ -134,7 +137,7 @@ def extract_colors(imageData, n, format, output):
     # aggregate colors
     to_canonical = {WHITE: WHITE, BLACK: BLACK}
     aggregated = Counter({WHITE: 0, BLACK: 0})
-    sorted_cols = sorted(dist.iteritems(), key=itemgetter(1), reverse=True)
+    sorted_cols = sorted(iter(list(dist.items())), key=itemgetter(1), reverse=True)
     for c, n in sorted_cols:
         if c in aggregated:
             # exact match!
@@ -152,7 +155,7 @@ def extract_colors(imageData, n, format, output):
 
     # order by prominence
     colors = sorted((Color(c, n / float(n_pixels)) \
-                for (c, n) in aggregated.iteritems()),
+                for (c, n) in list(aggregated.items())),
             key=attrgetter('prominence'),
             reverse=True)
 
@@ -251,7 +254,7 @@ def colorz(imageData, n, format, output):
 
     points = get_points(img) # Get all the points in an image
     clusters = kmeans(points, n, 10) # Find the clusters in an image, given n number of clusters and difference among the clusters
-    rgbs = [map(int, c.center.coords) for c in clusters]
+    rgbs = [list(map(int, c.center.coords)) for c in clusters]
 
     # Get the colors
     final_colors_hex = []
@@ -322,7 +325,7 @@ def palette(**kwargs):
     # If the image is given as a URL
     if url:
         imageFile = urlopen(url)
-        imageData = cStringIO.StringIO(imageFile.read())
+        imageData = io.StringIO(imageFile.read())
         if not mode:
             return extract_colors(imageData, n, format, output)
         elif mode.lower() == 'kmeans' or mode.lower() == 'k-means':
@@ -335,5 +338,5 @@ def palette(**kwargs):
             return colorz(path, n, format, output)
     # Unknown format of image
     else:
-        print "Unable to get image. Exiting."
+        print("Unable to get image. Exiting.")
         sys.exit(0)
