@@ -14,7 +14,7 @@ if PY3:
     raise RuntimeError('colorweave runs only on Python 2.6 or Python 2.7')
 else:
     if py_version < (2, 6):
-        raise RuntimeError('On Python 2, colorweave requires Python 2.6 or better')
+        raise RuntimeError('On Python 2.X, colorweave requires Python 2.6 or higher.')
     if py_version > (2, 6):
         pass
 
@@ -38,11 +38,10 @@ setup(
         "Programming Language :: Python :: 2.7",
     ],
     install_requires=[
-	    'Pillow==1.7.8',
-            'PIL>=1.1.6',
-            'colormath>=1.0.8',
-            'numpy>=1.6.1',
-	    'webcolors>=1.4',
+       'Pillow==1.7.8',
+        'colormath>=2.0.0',
+        'numpy>=1.9.0',
+        'webcolors>=1.4',
         ],
     keywords='color dominant palette colorweave kmeans css3 css21 name webcolors',
     author='Jyotiska NK',
