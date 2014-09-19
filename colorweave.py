@@ -9,7 +9,9 @@ except ImportError:
     from urllib import urlopen
 from PIL import Image as Im
 from PIL import ImageChops, ImageDraw
-from colormath.color_objects import sRGBColor
+from colormath.color_conversions import convert_color
+from colormath.color_diff import delta_e_cmc
+from colormath.color_objects import sRGBColor, LabColor
 import io
 import json
 import random
@@ -91,7 +93,9 @@ def get_color_name(requested_color):
 
 def distance(c1, c2):
     ''' Calculate the visual distance between the two colors. '''
-    return RGBColor(*c1).delta_e(RGBColor(*c2), method='cmc')
+    rgbc1 = sRGBColor(*c1)
+    rgbc2 = sRGBColor(*c2)
+    return delta_e_cmc(convert_color(rgbc1, LabColor), convert_color(rgbc2, LabColor))
 
 def rgb_to_hex(color):
     ''' Convert from RGB to Hex. '''
@@ -325,7 +329,7 @@ def palette(**kwargs):
     # If the image is given as a URL
     if url:
         imageFile = urlopen(url)
-        imageData = io.StringIO(imageFile.read())
+        imageData = io.BytesIO(imageFile.read())
         if not mode:
             return extract_colors(imageData, n, format, output)
         elif mode.lower() == 'kmeans' or mode.lower() == 'k-means':
