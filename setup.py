@@ -2,7 +2,6 @@
 
 from distutils.core import setup
 import sys, os, multiprocessing
-import colorweave
 
 requires = []
 
@@ -25,11 +24,10 @@ setup(
         "Programming Language :: Python :: 2.6",
         "Programming Language :: Python :: 2.7",
     ],
-    requires=(
-        'Pillow (>=1.7.8)',
-        'colormath (>=2.0.0)',
-        'numpy (>=1.9.0)',
-        'webcolors (>=1.4)',
+    install_requires=(
+        'Pillow>=1.7.8',
+        'colormath>=2.0.0',
+        'webcolors>=1.4',
     ),
     keywords='color dominant palette colorweave kmeans css3 css21 name webcolors',
     author='Jyotiska NK',
