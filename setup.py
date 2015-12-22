@@ -34,5 +34,4 @@ setup(
     author_email='jyotiska123@gmail.com',
     url='http://github.com/jyotiska/colorweave',
     py_modules=['colorweave'],
-    scripts=['colorweave.py'],
 )
