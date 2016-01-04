@@ -24,15 +24,14 @@ setup(
         "Programming Language :: Python :: 2.6",
         "Programming Language :: Python :: 2.7",
     ],
-    install_requires=(
+    install_requires=[
         'Pillow>=1.7.8',
         'colormath>=2.0.0',
         'webcolors>=1.4',
-    ),
+    ],
     keywords='color dominant palette colorweave kmeans css3 css21 name webcolors',
     author='Jyotiska NK',
     author_email='jyotiska123@gmail.com',
     url='http://github.com/jyotiska/colorweave',
     py_modules=['colorweave'],
-    scripts=['colorweave.py'],
 )
