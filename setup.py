@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
+import setuptools
 import sys, os, multiprocessing
 
 requires = []
@@ -8,7 +8,7 @@ requires = []
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
-setup(
+setuptools.setup(
     name='colorweave',
     version='0.1',
     description="Extract dominant colors from an image as a color palette",
